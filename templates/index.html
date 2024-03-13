@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Kayin Movies</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<style>
+    p,h1,h2{
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    html{
+        scroll-behavior: smooth;
+    }
+
+</style>
+</head>
+<body style="background-color: #1e1e1e;">
+    <div style="display: flex;justify-content: center;align-items: center;flex-direction: column;">
+
+        <h2 style="color: white;">Kayin Movies</h2>
+        <div style="display: flex;gap: 10px;">
+            <a  onclick="previouspage()">
+                <img style="transform: rotate(180deg);" src= "{{url_for('static', filename='/arrow.png')}}" >
+            </a>
+            <a onclick="nextpage()">
+                <img src= "{{url_for('static', filename='/arrow.png')}}" >
+            </a>
+            
+        </div>
+        <div style="display: flex;height: 50px;">       
+            <input id="searchquery" style="width: 500px;"></input>
+            <a href="#search_hash" onclick="getsearch('{{access_token}}')" style="cursor: pointer;background-color: blue;width: 30px;text-decoration: none;color: white;">
+            <div style="display: flex;justify-content: center; align-items: center;">
+                <p>></p>
+
+            </div>
+            </a>
+        </div>
+
+        <div style="display: flex;flex-wrap: wrap;gap: 30px;margin-top: 30px;justify-content: center;align-items: center;">
+        {% for movie in discovery.results%}
+          
+                <div >
+                    <div style="padding: 10px;">
+                        <a style="cursor: pointer;" onclick="watchmovie('{{movie.id}}','{{access_token}}')">
+                            <img style="width: 300px;height: 500px;border-radius: 10px;" src="https://image.tmdb.org/t/p/original/{{movie.poster_path}}"></img>
+                            <p style="color: white;">{{movie.title}}</p>
+                            <p style="color: white;">{{movie.release_date}}</p>
+                        </a>
+
+
+                    </div>
+                </div>
+            
+        
+
+       
+        {% endfor %}
+        </div>
+        <div style="display: flex;justify-content: center;align-items: center;">
+            
+            <h1  style="color: white;">Search Results</h1>
+            
+        </div>
+        
+        <div id="search_results_result" style="display: flex;flex-wrap: wrap;gap: 30px;margin-top: 30px;justify-content: center;align-items: center;">
+            <a  id="search_hash"></a>
+        </div>
+        
+
+    </div>
+
+</body>
+<script type="text/javascript">
+   async function watchmovie(movie_id,access_token){
+    const response = await fetch(`https://api.themoviedb.org/3/movie/${movie_id}/external_ids`,{
+		method: 'GET',
+		headers: {
+			"Authorization": `Bearer ${access_token}`
+
+		},
+	});
+    const moviesimdbid = await response.json();
+    const imdb_id = moviesimdbid["imdb_id"]
+    window.open(`https://vidsrc.to/embed/movie/${imdb_id}`, '_blank','noopener').focus();
+    }
+    function nextpage(){
+        let url = window.location.search;
+        let pagenum = url.replace("?page=", ''); 
+        if (pagenum.length === 0){
+            window.open(`http://127.0.0.1:5000?page=2`,"_self").focus();
+
+        }
+        else{
+            window.open(`http://127.0.0.1:5000?page=${parseInt(pagenum) + 1}`,"_self").focus();
+        }
+    }
+    function previouspage(){
+        let url = window.location.search;
+        let pagenum = url.replace("?page=", ''); 
+        if (pagenum.length === 0 || pagenum === "1"){
+           // Do Nothing
+
+        }
+        else{
+            window.open(`http://127.0.0.1:5000?page=${parseInt(pagenum) - 1}`,"_self").focus();
+        }
+    }
+    function scrollTo(hash) {
+    location.hash = "#" + hash;
+    }
+    async function getsearch(access_token){
+        let url = window.location.search;
+        let pagenum = url.replace("?page=", ''); 
+
+        let searchquery = document.getElementById("searchquery").value
+        const response = await fetch(`https://api.themoviedb.org/3/search/movie?query=${searchquery}&language=en-US&page=1`,{
+		method: 'GET',
+		headers: {
+			"Authorization": `Bearer ${access_token}`
+
+		},
+        });
+        const search_result_json = await response.json();
+        let search_results = search_result_json["results"]
+        let search_results_div = document.getElementById("search_results_result");
+        search_results_div.innerHTML = ""
+        
+        for (let i = 0; i < search_results.length; i++) {
+            let new_child = document.createElement("div")
+            let movie = search_results[i]
+            new_child.innerHTML = `
+                <div >
+                    <div style="padding: 10px;">
+                        <a style="cursor: pointer;" onclick="watchmovie('${movie.id}','{{access_token}}')">
+                            <img style="width: 300px;height: 500px;border-radius: 10px;" src="https://image.tmdb.org/t/p/original/${movie.poster_path}"></img>
+                            <p style="color: white;">${movie.title}</p>
+                            <p style="color: white;">${movie.release_date}</p>
+                        </a>
+
+
+                    </div>
+                </div>`
+                search_results_div.appendChild(new_child);
+        }
+
+
+
+        
+                
+    }
+
+</script>
+</html>  

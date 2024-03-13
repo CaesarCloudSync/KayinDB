@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Flask Tutorial</title>
+<style>
+    p,h1,h2{
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+</style>
+</head>
+<body style="background-color: #1e1e1e;">
+    <div style="display: flex;justify-content: center;align-items: center;flex-direction: column;">
+        <h1 style="color: white;">{{data.series_name}}</h1>
+        <p style="color: white;">{{data.overview}}</p>
+        <img style="width: 600px;height: 900px;border-radius: 5px;" src="https://image.tmdb.org/t/p/original/{{data.poster_path}}"></img>
+        <h2 style="color: white;">Episodes</h2>
+        <div style="display: flex;flex-wrap: wrap;gap: 30px;margin-top: 30px;">
+        {% for season in data.seasons%}
+            <a style="cursor: pointer;" href="https://vidsrc.to/embed/tv/{{data.imdb_id}}/${season_number}/${episode}">
+                <div style="display: flex;justify-content:center;align-items:center;background-color: white;border-radius: 5px;">
+                    <div style="padding: 10px;">
+                        <img src="https://image.tmdb.org/t/p/original/{{season.poster_path}}"></img>
+                        <p>{{season.name}}</p>
+
+                    </div>
+                </div>
+            </a>
+        
+
+       
+        {% endfor %}
+        </div>
+
+    </div>
+
+</body>
+</html>  
