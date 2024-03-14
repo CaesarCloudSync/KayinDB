@@ -18,10 +18,10 @@
 
         <h2 style="color: white;">Kayin Movies</h2>
         <div style="display: flex;gap: 10px;">
-            <a  onclick="previouspage()">
+            <a style="cursor: pointer;" onclick="previouspage()">
                 <img style="transform: rotate(180deg);" src= "{{url_for('static', filename='/arrow.png')}}" >
             </a>
-            <a onclick="nextpage()">
+            <a style="cursor: pointer;" onclick="nextpage()">
                 <img src= "{{url_for('static', filename='/arrow.png')}}" >
             </a>
             
@@ -87,11 +87,11 @@
         let url = window.location.search;
         let pagenum = url.replace("?page=", ''); 
         if (pagenum.length === 0){
-            window.open(`http://127.0.0.1:5000?page=2`,"_self").focus();
+            window.open(`/?page=2`,"_self").focus();
 
         }
         else{
-            window.open(`http://127.0.0.1:5000?page=${parseInt(pagenum) + 1}`,"_self").focus();
+            window.open(`/?page=${parseInt(pagenum) + 1}`,"_self").focus();
         }
     }
     function previouspage(){
@@ -102,7 +102,7 @@
 
         }
         else{
-            window.open(`http://127.0.0.1:5000?page=${parseInt(pagenum) - 1}`,"_self").focus();
+            window.open(`/?page=${parseInt(pagenum) - 1}`,"_self").focus();
         }
     }
     function scrollTo(hash) {
